@@ -6,50 +6,52 @@ const path = require('path')
 
 const bodyParser = require('body-parser')
 
-app.get('/', function(req,res){
-
-    res.send('Hola mundo!')
-
-})
-
-app.get('/viejo', function(req,res){
-
-    res.redirect('/nuevo')
-
-})
-
-app.get('/nuevo', function(req,res){
-
-    res.send('Hola esta es la nueva ubicacion!')
-
-})
-
-app.get('/pag', function(req,res){
-    
-    let file = path.resolve('src','index.html')
-
-    res.sendFile(file)
-
-})
+const products = require('./data')
 
 //middlewares
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
 
-app.get('/form', function(req,res){
+app.get('/', function(req,res){
     
-    let file = path.resolve('src','form.html')
-
-    res.sendFile(file)
+    res.json()
 
 })
 
-app.post('/form', function(req,res){
-    
-    res.send(req.body)
+app.get('/products', function(req,res){
+    console.log(req.query)
+    res.json(products)
+
 })
 
+app.get('/products/:id', function(req,res){
+    console.log(req.params)
+    res.json()
 
+})
+
+app.post('/products', function(req,res){
+    console.log(req.body)
+
+    if(true){
+       return res.status(403).json({message: "cannot post"})
+    }
+
+    res.json()
+
+})
+
+app.patch('/products/:id', function(req,res){
+    
+    res.json()
+
+})
+
+app.delete('/products/:id', function(req,res){
+    
+    res.json()
+
+})
 // http://localhost:3000
 // http://dominio.com
 app.listen(3000)
