@@ -75,15 +75,43 @@ app.post('/products', function(req,res){
 })
 
 app.patch('/products/:id', function(req,res){
-    
-    res.json()
-
+    let product = products.find(function(product) {
+        return product.id == req.params.id
+    }) 
+    if (product) {
+        let patchProduct ={
+            id: req.params.id,
+            description:'',
+            is_visible: false,
+            ...req.body
+        }
+        let content =fs.readFileSync('./products.json', {encoding: 'utf8'})
+        let json = JSON.parse(content)
+        let patch = products.indexOf(product)
+        json[patch] = patchProduct
+        content = JSON.stringify(json)
+        fs.writeFileSync('./products.json', content)
+        return res.status(201).json({message: "edited", "id" :patchProduct.id})
+    }else{
+        res.status(404).json({message:"this product does not exist"})
+    }
 })
 
 app.delete('/products/:id', function(req,res){
-    
-    res.json()
-
+    let product = products.find(function(product) {
+        return product.id == req.params.id
+    }) 
+    if (product) {
+        let content =fs.readFileSync('./products.json', {encoding: 'utf8'})
+        let json = JSON.parse(content)
+        let patch = products.indexOf(product)
+        json.splice(patch,1)
+        content = JSON.stringify(json)
+        fs.writeFileSync('./products.json', content)
+        return res.status(201).json({message: "deletd", products})
+    }else{
+        res.status(404).json({message:"this product does not exist"})
+    }
 })
 // example_1 http://localhost:3000
 // example_2 http://dominio.com
