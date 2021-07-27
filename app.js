@@ -113,6 +113,7 @@ app.delete('/products/:id', function(req,res){
         res.status(404).json({message:"this product does not exist"})
     }
 })
+
 // example_1 http://localhost:3000
 // example_2 http://dominio.com
 app.listen(3000)
