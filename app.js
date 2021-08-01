@@ -75,43 +75,33 @@ app.post('/products', function(req,res){
 })
 
 app.patch('/products/:id', function(req,res){
-    let product = products.find(function(product) {
-        return product.id == req.params.id
-    }) 
-    if (product) {
-        let patchProduct ={
-            id: req.params.id,
-            description:'',
-            is_visible: false,
-            ...req.body
-        }
-        let content =fs.readFileSync('./products.json', {encoding: 'utf8'})
-        let json = JSON.parse(content)
-        let patch = products.indexOf(product)
-        json[patch] = patchProduct
-        content = JSON.stringify(json)
-        fs.writeFileSync('./products.json', content)
-        return res.status(201).json({message: "edited", "id" :patchProduct.id})
-    }else{
-        res.status(404).json({message:"this product does not exist"})
+    let index = products.findIndex(product => product.id == req.params.id)
+    if(index == -1){
+        return res.status(404).json({message:"not found"})
     }
+    let oldProduct = products[index]
+    let product = {
+        ...products[index],
+        ...req.body,
+        id: oldProduct.id,
+    }
+    products[index] =  product
+    let content = JSON.stringify(products)
+    fs.writeFileSync('./products.json' , content)
+    res.status(201).json({message: "success"})
 })
 
 app.delete('/products/:id', function(req,res){
-    let product = products.find(function(product) {
-        return product.id == req.params.id
-    }) 
-    if (product) {
-        let content =fs.readFileSync('./products.json', {encoding: 'utf8'})
-        let json = JSON.parse(content)
-        let patch = products.indexOf(product)
-        json.splice(patch,1)
-        content = JSON.stringify(json)
-        fs.writeFileSync('./products.json', content)
-        return res.status(201).json({message: "deletd", products})
-    }else{
-        res.status(404).json({message:"this product does not exist"})
+    let content = fs.readFileSync('./products.json', {encoding: 'utf8'})
+    let  products= JSON.parse(content) 
+    let index = products.findIndex(product => product.id == req.params.id)
+    if(index == -1){
+        return res.status(404).json({message:"not found"})
     }
+    products = products.filter( product => product.id != Number(req.params.id))    
+    content = JSON.stringify(products)
+    fs.writeFileSync('./products.json', content)
+    res.status(201).json({message: "success"})
 })
 
 // example_1 http://localhost:3000
