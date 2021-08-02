@@ -4,8 +4,8 @@ abstract class Entity {
     public setId(id: Number){
         this.id = id
     }
-    public getId(id: Number){
-       return this.id = id
+    public getId(){
+       return this.id
     }
 }
 
